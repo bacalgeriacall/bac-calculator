@@ -43,7 +43,7 @@
         .section-header { margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
         .section-header h2 { font-size: 1.3rem; color: var(--primary-color); }
 
-        .stream-dropdown { width: 100%; max-width: 400px; padding: 0.8rem; border-radius: var(--radius-md); border: 2px solid var(--border-color); font-size: 1rem; }
+        .stream-dropdown { width: 100%; max-width: 400px; padding: 0.8rem; border-radius: var(--radius-md); border: 2px solid var(--border-color); font-size: 1rem; outline: none; }
 
         .grades-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
         .grade-card { background: #f1f5f9; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); }
@@ -72,15 +72,20 @@
         
         .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--radius-md); color: white; z-index: 1000; display: none; }
 
-        /* تنسيق PDF المحسن */
+        /* تنسيق PDF الاحترافي */
         #pdf-content {
-            width: 800px; padding: 40px; background: white; color: black; direction: rtl;
-            position: absolute; left: -9999px; /* مخفي */
+            width: 750px; padding: 40px; background: white; color: black; direction: rtl;
+            position: absolute; left: -9999px;
         }
-        .pdf-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 10px; text-align: center; font-size: 14px; }
-        .pdf-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .pdf-summary { margin-top: 20px; font-size: 16px; border: 1px solid #000; padding: 15px; }
+        .pdf-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 25px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 12px; text-align: center; font-size: 14px; }
+        .pdf-table th { background-color: #f3f4f6; font-weight: bold; }
+        .pdf-summary-box { border: 2px solid #000; padding: 20px; margin-top: 10px; }
+        .pdf-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+        .pdf-status { font-size: 22px; font-weight: 900; text-align: center; margin-top: 15px; padding: 10px; border: 2px dashed #000; }
+        .status-pass { color: #10b981; border-color: #10b981; }
+        .status-fail { color: #ef4444; border-color: #ef4444; }
     </style>
 </head>
 <body>
@@ -134,31 +139,41 @@
         </footer>
     </div>
 
-    <!-- محتوى PDF المخفي -->
+    <!-- محتوى PDF المطور -->
     <div id="pdf-content">
         <div class="pdf-header">
-            <h1 style="margin-bottom: 5px;">كشف نقاط تقديري - امتحان البكالوريا</h1>
-            <h3 id="pdf-stream"></h3>
+            <h1 style="font-size: 28px; margin-bottom: 10px;">كشف نقاط تقديري - امتحان البكالوريا</h1>
+            <h2 id="pdf-stream" style="font-weight: normal; color: #4b5563;"></h2>
         </div>
         <table class="pdf-table">
             <thead>
-                <tr style="background: #f0f0f0;">
-                    <th>المادة</th>
-                    <th>النقطة / 20</th>
-                    <th>المعامل</th>
-                    <th>المجموع</th>
+                <tr>
+                    <th style="width: 40%;">المادة</th>
+                    <th style="width: 20%;">النقطة / 20</th>
+                    <th style="width: 20%;">المعامل</th>
+                    <th style="width: 20%;">المجموع</th>
                 </tr>
             </thead>
             <tbody id="pdf-tbody"></tbody>
         </table>
-        <div class="pdf-summary">
-            <p>المجموع العام: <strong id="pdf-total-p"></strong></p>
-            <p>مجموع المعاملات: <strong id="pdf-total-c"></strong></p>
-            <p style="font-size: 20px; margin-top: 10px; color: #2563eb;">المعدل العام: <strong id="pdf-avg"></strong> / 20</p>
+        <div class="pdf-summary-box">
+            <div class="pdf-row">
+                <span>المجموع العام للنقاط:</span>
+                <strong id="pdf-total-p"></strong>
+            </div>
+            <div class="pdf-row">
+                <span>مجموع المعاملات:</span>
+                <strong id="pdf-total-c"></strong>
+            </div>
+            <div class="pdf-row" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #000;">
+                <span style="font-size: 20px;">المعدل العام:</span>
+                <strong style="font-size: 24px; color: #2563eb;" id="pdf-avg"></strong>
+            </div>
+            <div id="pdf-status" class="pdf-status"></div>
         </div>
-        <div style="margin-top: 30px; text-align: left; font-size: 12px;">
-            <p>تم استخراج هذا الكشف من حاسبة معدل البكالوريا الجزائرية</p>
-            <p>التاريخ: <span id="pdf-date"></span></p>
+        <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 13px;">
+            <span>التاريخ: <span id="pdf-date"></span></span>
+            <span>استخرج من: حاسبة معدل البكالوريا الجزائرية</span>
         </div>
     </div>
 
@@ -257,8 +272,17 @@
             document.getElementById('pdf-tbody').innerHTML = rows;
             document.getElementById('pdf-total-p').innerText = points.toFixed(2);
             document.getElementById('pdf-total-c').innerText = coeffs;
-            document.getElementById('pdf-avg').innerText = avg;
+            document.getElementById('pdf-avg').innerText = avg + " / 20";
             document.getElementById('pdf-date').innerText = new Date().toLocaleDateString('ar-DZ');
+            
+            const statusBox = document.getElementById('pdf-status');
+            if (parseFloat(avg) >= 10) {
+                statusBox.innerText = "النتيجة: ناجح (ة)";
+                statusBox.className = "pdf-status status-pass";
+            } else {
+                statusBox.innerText = "النتيجة: راسب (ة)";
+                statusBox.className = "pdf-status status-fail";
+            }
 
             document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
@@ -266,20 +290,18 @@
 
         document.getElementById('pdfBtn').onclick = () => {
             const element = document.getElementById('pdf-content');
-            // إظهار مؤقت للتوليد
             element.style.position = 'static';
             element.style.left = '0';
 
             const opt = {
-                margin: 0.5,
+                margin: 0.3,
                 filename: 'كشف_نقاط_البكالوريا.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                // إخفاء مرة أخرى
                 element.style.position = 'absolute';
                 element.style.left = '-9999px';
             });
