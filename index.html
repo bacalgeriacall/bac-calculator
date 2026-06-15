@@ -104,12 +104,12 @@
 
         /* تنسيق PDF */
         #pdf-content {
-            width: 790px; padding: 50px; background: white; color: black; direction: rtl;
+            width: 100%; max-width: 750px; padding: 40px; background: white; color: black; direction: rtl;
             position: absolute; left: -9999px;
         }
         .pdf-header { text-align: center; border-bottom: 4px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 12px; text-align: center; font-size: 16px; }
+        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 12px; text-align: center; font-size: 16px; page-break-inside: avoid; }
         .pdf-table th { background-color: #eeeeee; font-weight: bold; }
         .pdf-summary-box { border: 2.5px solid #000; padding: 25px; margin-top: 15px; }
         .pdf-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
@@ -326,11 +326,11 @@
             element.style.left = '0';
 
             const opt = {
-                margin: 0.2,
+                margin: [0.5, 0.2, 0.5, 0.2], // Top, Left, Bottom, Right margins in inches
                 filename: 'كشف_نقاط_البكالوريا.pdf',
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true, allowTaint: true, scrollY: 0, foreignObjectRendering: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
