@@ -36,8 +36,30 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-color); color: var(--text-primary); line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 1rem; }
 
-        .header { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 2.5rem 1rem; text-align: center; border-radius: 0 0 var(--radius-xl) var(--radius-xl); margin-bottom: 2rem; box-shadow: var(--shadow-md); }
-        .main-title { font-size: 2rem; margin-bottom: 0.5rem; }
+        /* تنسيق الهيدر مع اللوغو */
+        .header { 
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
+            color: white; 
+            padding: 2rem 1rem; 
+            text-align: center; 
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl); 
+            margin-bottom: 2rem; 
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            padding: 5px;
+            box-shadow: var(--shadow-md);
+        }
+        .main-title { font-size: 2rem; margin: 0; }
+        .subtitle { font-size: 1.1rem; opacity: 0.9; }
 
         .section { background: var(--surface-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md); margin-bottom: 1.5rem; }
         .section-header { margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
@@ -72,7 +94,7 @@
         
         .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--radius-md); color: white; z-index: 1000; display: none; }
 
-        /* تنسيق PDF النهائي */
+        /* تنسيق PDF */
         #pdf-content {
             width: 790px; padding: 50px; background: white; color: black; direction: rtl;
             position: absolute; left: -9999px;
@@ -86,16 +108,17 @@
         .pdf-status-banner { font-size: 26px; font-weight: 900; text-align: center; margin-top: 20px; padding: 15px; border: 3px solid #000; border-radius: 10px; }
         .status-pass-final { color: #059669; border-color: #059669; background-color: #ecfdf5; }
         .status-fail-final { color: #dc2626; border-color: #dc2626; background-color: #fef2f2; }
-        
-        /* إصلاح ترتيب المعدل */
         .avg-display { direction: ltr; display: inline-block; unicode-bidi: embed; }
     </style>
 </head>
 <body>
-    <img src="bac-image.png" alt="حاسبة معدل البكالوريا الجزائرية" style="width:100%; max-width:600px; display:block; margin:auto; margin-top: 20px;">
+    <!-- الصورة الرأسية الكبيرة -->
+    <img src="bac-image.png" alt="Header" style="width:100%; max-width:800px; display:block; margin:auto; margin-top: 20px; border-radius: 10px;">
 
     <div class="container">
         <header class="header">
+            <!-- الشعار الصغير -->
+            <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
             <h1 class="main-title">حاسبة معدل البكالوريا</h1>
             <p class="subtitle">احسب معدلك بدقة حسب شعبتك</p>
         </header>
@@ -142,7 +165,7 @@
         </footer>
     </div>
 
-    <!-- محتوى PDF النهائي -->
+    <!-- محتوى PDF -->
     <div id="pdf-content">
         <div class="pdf-header">
             <h1 style="font-size: 32px; margin-bottom: 10px;">كشف نقاط تقديري - امتحان البكالوريا</h1>
@@ -275,10 +298,7 @@
             document.getElementById('pdf-tbody').innerHTML = rows;
             document.getElementById('pdf-total-p').innerText = " " + points.toFixed(2);
             document.getElementById('pdf-total-c').innerText = " " + coeffs;
-            
-            // إصلاح المعدل في PDF
             document.getElementById('pdf-avg-container').innerHTML = `<span class="avg-display">${avg} / 20</span>`;
-            
             document.getElementById('pdf-date').innerText = " " + new Date().toLocaleDateString('ar-DZ');
             
             const statusBox = document.getElementById('pdf-status');
