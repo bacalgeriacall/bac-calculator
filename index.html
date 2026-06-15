@@ -6,7 +6,6 @@
     <meta name="google-site-verification" content="ve-lwXOh5LqUCmM3RfUBuysXMMBnwu5GiRZCKt9YNPk" />
     <meta name="description" content="حاسبة معدل البكالوريا الجزائرية لجميع الشعب (علوم، رياضيات، تقني، آداب، لغات). احسب معدلك بدقة وسهولة مجانًا مع المعاملات الرسمية.">
     <meta name="keywords" content="bac algeria, bac calculator, معدل البكالوريا الجزائر, حساب معدل البكالوريا, bac 2026, sciences bac, math bac, algérie bac">
-    <img src="bac-image.png" alt="حاسبة معدل البكالوريا الجزائرية" style="width:100%; max-width:600px; display:block; margin:auto;">
     <meta property="og:title" content="حاسبة معدل البكالوريا الجزائرية">
     <meta property="og:description" content="احسب معدلك بدقة لجميع الشعب بسهولة وسرعة">
     <meta property="og:image" content="https://bacalgeriacall.github.io/bac-calculator/bac-image.png">
@@ -14,11 +13,108 @@
     <meta property="og:url" content="https://bacalgeriacall.github.io/bac-calculator/">
     <title>حاسبة معدل البكالوريا الجزائرية</title>
     <meta name="robots" content="index, follow">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ============================================
+           متغيرات CSS (CSS Variables)
+           ============================================ */
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --success-color: #10b981;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 1rem; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* رأس الصفحة */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+        .main-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 1.1rem; opacity: 0.95; }
+
+        /* المحتوى الرئيسي */
+        .main-content { flex: 1; display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem; }
+
+        .section { background: var(--surface-color); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-md); animation: fadeIn 0.5s ease-out; }
+        .section-header { margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
+        .section-header h2 { font-size: 1.5rem; color: var(--primary-color); font-weight: 600; }
+
+        .stream-dropdown {
+            width: 100%; max-width: 400px; padding: 1rem; font-size: 1rem; border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); background-color: var(--surface-color); cursor: pointer; appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: left 1rem center; padding-left: 2.5rem;
+        }
+
+        .grades-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .grade-card { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; transition: var(--transition); }
+        .grade-card.disabled { opacity: 0.5; filter: grayscale(1); pointer-events: none; background: #e2e8f0; }
+        .grade-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .grade-coefficient { background-color: var(--primary-color); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-right: 0.5rem; }
+        
+        .optional-toggle-container { margin-bottom: 12px; padding: 8px; background: rgba(37, 99, 235, 0.05); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .optional-toggle-container input { width: 18px; height: 18px; accent-color: var(--primary-color); }
+
+        .grade-input { width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: var(--radius-sm); font-size: 1rem; margin-top: 0.75rem; }
+        .grade-input:disabled { background-color: #f1f5f9; cursor: not-allowed; }
+
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .result-card { background: #f8fafc; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center; }
+        .result-card.highlight { background: var(--primary-color); color: white; }
+        .result-value { font-size: 2.5rem; font-weight: 700; }
+
+        .buttons-section { display: flex; gap: 1rem; justify-content: center; }
+        .btn { padding: 1rem 2rem; font-size: 1rem; font-weight: 600; border: none; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-secondary { background: var(--secondary-color); color: white; }
+
+        .footer { background: var(--text-primary); color: white; text-align: center; padding: 2rem 1rem; margin-top: auto; }
+
+        .error-message, .success-message { position: fixed; top: 20px; right: 20px; padding: 1rem 1.5rem; border-radius: var(--radius-md); z-index: 1000; display: none; }
+        .error-message { background-color: #fee2e2; color: #991b1b; border-left: 4px solid var(--danger-color); }
+        .success-message { background-color: #dcfce7; color: #166534; border-left: 4px solid var(--success-color); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body>
+    <img src="bac-image.png" alt="حاسبة معدل البكالوريا الجزائرية" style="width:100%; max-width:600px; display:block; margin:auto; margin-top: 20px;">
+    
     <div class="container">
-        <!-- رأس الصفحة -->
         <header class="header">
             <div class="header-content">
                 <h1 class="main-title">حاسبة معدل البكالوريا</h1>
@@ -26,13 +122,9 @@
             </div>
         </header>
 
-        <!-- المحتوى الرئيسي -->
         <main class="main-content">
-            <!-- قسم اختيار الشعبة -->
-            <section class="section stream-selection">
-                <div class="section-header">
-                    <h2>اختر شعبتك</h2>
-                </div>
+            <section class="section">
+                <div class="section-header"><h2>اختر شعبتك</h2></div>
                 <div class="stream-selector">
                     <select id="streamSelect" class="stream-dropdown">
                         <option value="">-- اختر الشعبة --</option>
@@ -46,124 +138,141 @@
                 </div>
             </section>
 
-            <!-- قسم إدخال العلامات -->
-            <section class="section grades-input" id="gradesSection" style="display: none;">
-                <div class="section-header">
-                    <h2>أدخل علاماتك</h2>
-                    <p class="section-description">أدخل علامة كل مادة من 0 إلى 20</p>
-                </div>
-                
-                <div class="grades-container" id="gradesContainer">
-                    <!-- سيتم ملء هذا القسم ديناميكياً بواسطة JavaScript -->
-                </div>
+            <section class="section" id="gradesSection" style="display: none;">
+                <div class="section-header"><h2>أدخل علاماتك</h2></div>
+                <div class="grades-container" id="gradesContainer"></div>
             </section>
 
-            <!-- قسم النتائج -->
-            <section class="section results-section" id="resultsSection" style="display: none;">
-                <div class="section-header">
-                    <h2>النتائج</h2>
-                </div>
-                
+            <section class="section" id="resultsSection" style="display: none;">
+                <div class="section-header"><h2>النتائج</h2></div>
                 <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-label">مجموع النقاط</div>
-                        <div class="result-value" id="totalPoints">0.00</div>
-                    </div>
-                    
-                    <div class="result-card">
-                        <div class="result-label">مجموع المعاملات</div>
-                        <div class="result-value" id="totalCoefficients">0</div>
-                    </div>
-                    
-                    <div class="result-card highlight">
-                        <div class="result-label">المعدل النهائي</div>
-                        <div class="result-value" id="finalAverage">0.00</div>
-                    </div>
+                    <div class="result-card"><div>مجموع النقاط</div><div class="result-value" id="totalPoints">0.00</div></div>
+                    <div class="result-card"><div>مجموع المعاملات</div><div class="result-value" id="totalCoefficients">0</div></div>
+                    <div class="result-card highlight"><div>المعدل النهائي</div><div class="result-value" id="finalAverage">0.00</div></div>
                 </div>
             </section>
 
-            <!-- قسم شرح الحساب -->
-            <section class="section explanation-section" id="explanationSection" style="display: none;">
-                <div class="section-header">
-                    <h2>شرح الحساب</h2>
-                </div>
-                
-                <div class="explanation-box">
-                    <div class="explanation-formula">
-                        <p class="formula-title">الصيغة المستخدمة:</p>
-                        <div class="formula-display">
-                            <span class="formula-text">المعدل = (مجموع العلامات × المعاملات) ÷ (مجموع المعاملات)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="explanation-details" id="explanationDetails">
-                        <!-- سيتم ملء هذا القسم ديناميكياً -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- قسم الأزرار -->
             <section class="section buttons-section">
-                <button id="calculateBtn" class="btn btn-primary" style="display: none;">
-                    <span class="btn-icon">🧮</span>
-                    احسب المعدل
-                </button>
-                <button id="resetBtn" class="btn btn-secondary" style="display: none;">
-                    <span class="btn-icon">🔄</span>
-                    إعادة تعيين
-                </button>
-            </section>
-
-            <!-- قسم المساعدة -->
-            <section class="section help-section">
-                <div class="section-header">
-                    <h2>كيفية الاستخدام</h2>
-                </div>
-                <div class="help-content">
-                    <div class="help-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>اختر شعبتك</h3>
-                            <p>حدد الشعبة التي تابعتها من القائمة المنسدلة</p>
-                        </div>
-                    </div>
-                    <div class="help-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>أدخل علاماتك</h3>
-                            <p>أدخل علامة كل مادة من 0 إلى 20</p>
-                        </div>
-                    </div>
-                    <div class="help-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>احسب معدلك</h3>
-                            <p>اضغط على زر "احسب المعدل" لعرض النتائج</p>
-                        </div>
-                    </div>
-                </div>
+                <button id="calculateBtn" class="btn btn-primary" style="display: none;">🧮 احسب المعدل</button>
+                <button id="resetBtn" class="btn btn-secondary" style="display: none;">🔄 إعادة تعيين</button>
             </section>
         </main>
 
-        <!-- تذييل الصفحة -->
         <footer class="footer">
             <p>&copy; 2024 حاسبة معدل البكالوريا الجزائرية | جميع الحقوق محفوظة</p>
-            <p class="footer-note">هذه الحاسبة توفر حسابات تقريبية ولا تعتبر رسمية</p>
         </footer>
     </div>
 
-    <!-- رسالة الخطأ -->
-    <div class="error-message" id="errorMessage" style="display: none;">
-        <span id="errorText"></span>
-        <button class="close-error" onclick="closeError()">×</button>
-    </div>
+    <div class="error-message" id="errorMessage"><span id="errorText"></span></div>
+    <div class="success-message" id="successMessage"><span id="successText"></span></div>
 
-    <!-- رسالة النجاح -->
-    <div class="success-message" id="successMessage" style="display: none;">
-        <span id="successText"></span>
-        <button class="close-success" onclick="closeSuccess()">×</button>
-    </div>
+    <script>
+        const streamsData = {
+            sciences: { name: 'علوم تجريبية', subjects: [
+                { name: 'اللغة العربية', coefficient: 3 }, { name: 'اللغة الفرنسية', coefficient: 2 }, { name: 'اللغة الإنجليزية', coefficient: 2 },
+                { name: 'التربية الإسلامية', coefficient: 2 }, { name: 'التاريخ والجغرافيا', coefficient: 2 }, { name: 'الرياضيات', coefficient: 5 },
+                { name: 'العلوم الطبيعية', coefficient: 6 }, { name: 'العلوم الفيزيائية', coefficient: 5 }, { name: 'الفلسفة', coefficient: 2 },
+                { name: 'التربية البدنية', coefficient: 1, isOptional: true }
+            ]},
+            math: { name: 'رياضيات', subjects: [
+                { name: 'اللغة العربية', coefficient: 3 }, { name: 'اللغة الفرنسية', coefficient: 2 }, { name: 'اللغة الإنجليزية', coefficient: 2 },
+                { name: 'التربية الإسلامية', coefficient: 2 }, { name: 'التاريخ والجغرافيا', coefficient: 2 }, { name: 'الرياضيات', coefficient: 7 },
+                { name: 'العلوم الطبيعية', coefficient: 2 }, { name: 'العلوم الفيزيائية', coefficient: 6 }, { name: 'الفلسفة', coefficient: 2 },
+                { name: 'التربية البدنية', coefficient: 1, isOptional: true }
+            ]},
+            technical: { name: 'تقني رياضي', subjects: [
+                { name: 'اللغة العربية', coefficient: 3 }, { name: 'اللغة الفرنسية', coefficient: 2 }, { name: 'اللغة الإنجليزية', coefficient: 2 },
+                { name: 'التربية الإسلامية', coefficient: 2 }, { name: 'التاريخ والجغرافيا', coefficient: 2 }, { name: 'الرياضيات', coefficient: 6 },
+                { name: 'العلوم الفيزيائية', coefficient: 6 }, { name: 'التكنولوجيا', coefficient: 7 }, { name: 'الفلسفة', coefficient: 2 },
+                { name: 'التربية البدنية', coefficient: 1, isOptional: true }
+            ]},
+            management: { name: 'تسيير واقتصاد', subjects: [
+                { name: 'اللغة العربية', coefficient: 3 }, { name: 'اللغة الفرنسية', coefficient: 2 }, { name: 'اللغة الإنجليزية', coefficient: 2 },
+                { name: 'التربية الإسلامية', coefficient: 2 }, { name: 'التاريخ والجغرافيا', coefficient: 4 }, { name: 'الرياضيات', coefficient: 5 },
+                { name: 'الاقتصاد والمناجمنت', coefficient: 5 }, { name: 'القانون', coefficient: 2 }, { name: 'التسيير المحاسبي والمالي', coefficient: 6 },
+                { name: 'الفلسفة', coefficient: 2 }, { name: 'التربية البدنية', coefficient: 1, isOptional: true }
+            ]},
+            languages: { name: 'لغات أجنبية', subjects: [
+                { name: 'اللغة العربية', coefficient: 5 }, { name: 'اللغة الفرنسية', coefficient: 5 }, { name: 'اللغة الإنجليزية', coefficient: 5 },
+                { name: 'اللغة الأجنبية الثالثة', coefficient: 4 }, { name: 'التربية الإسلامية', coefficient: 2 }, { name: 'التاريخ والجغرافيا', coefficient: 2 },
+                { name: 'الرياضيات', coefficient: 2 }, { name: 'الفلسفة', coefficient: 2 }, { name: 'التربية البدنية', coefficient: 1, isOptional: true }
+            ]},
+            literature: { name: 'آداب وفلسفة', subjects: [
+                { name: 'اللغة العربية', coefficient: 6 }, { name: 'اللغة الفرنسية', coefficient: 3 }, { name: 'اللغة الإنجليزية', coefficient: 3 },
+                { name: 'التربية الإسلامية', coefficient: 2 }, { name: 'التاريخ والجغرافيا', coefficient: 4 }, { name: 'الرياضيات', coefficient: 2 },
+                { name: 'الفلسفة', coefficient: 6 }, { name: 'التربية البدنية', coefficient: 1, isOptional: true }
+            ]}
+        };
 
-    <script src="script.js"></script>
+        let currentStream = null;
+        let gradesData = {};
+        let optionalState = {};
+
+        const streamSelect = document.getElementById('streamSelect');
+        const gradesSection = document.getElementById('gradesSection');
+        const gradesContainer = document.getElementById('gradesContainer');
+        const resultsSection = document.getElementById('resultsSection');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        streamSelect.onchange = (e) => {
+            currentStream = e.target.value;
+            if (!currentStream) { gradesSection.style.display = 'none'; return; }
+            gradesData = {}; optionalState = {};
+            renderCards();
+            gradesSection.style.display = 'block';
+            calculateBtn.style.display = 'flex'; resetBtn.style.display = 'flex';
+        };
+
+        function renderCards() {
+            gradesContainer.innerHTML = '';
+            streamsData[currentStream].subjects.forEach((sub, i) => {
+                const card = document.createElement('div');
+                card.className = 'grade-card'; card.id = `card-${i}`;
+                if (sub.isOptional) optionalState[i] = true;
+                
+                let toggle = sub.isOptional ? `<label class="optional-toggle-container"><input type="checkbox" checked onchange="toggleSub(${i})"><span>تفعيل المادة</span></label>` : '';
+                
+                card.innerHTML = `<label class="grade-label">${sub.name} <span class="grade-coefficient">معامل: ${sub.coefficient}</span></label>${toggle}<input type="number" class="grade-input" id="grade-${i}" min="0" max="20" step="0.01" placeholder="0-20">`;
+                const input = card.querySelector('input');
+                input.oninput = (e) => { gradesData[i] = parseFloat(e.target.value); card.classList.remove('error'); };
+                gradesContainer.appendChild(card);
+            });
+        }
+
+        window.toggleSub = (i) => {
+            const checked = document.querySelector(`#card-${i} input[type="checkbox"]`).checked;
+            optionalState[i] = checked;
+            const card = document.getElementById(`card-${i}`);
+            const input = document.getElementById(`grade-${i}`);
+            if (checked) { card.classList.remove('disabled'); input.disabled = false; }
+            else { card.classList.add('disabled'); input.disabled = true; input.value = ''; delete gradesData[i]; }
+        };
+
+        calculateBtn.onclick = () => {
+            const stream = streamsData[currentStream];
+            let totalWeighted = 0, totalCoeff = 0, missing = false;
+            stream.subjects.forEach((sub, i) => {
+                if (sub.isOptional ? optionalState[i] : true) {
+                    if (isNaN(gradesData[i]) || gradesData[i] < 0 || gradesData[i] > 20) missing = true;
+                    else { totalWeighted += gradesData[i] * sub.coefficient; totalCoeff += sub.coefficient; }
+                }
+            });
+            if (missing) { showNotif('يرجى إدخال جميع العلامات (0-20)', 'error'); return; }
+            document.getElementById('totalPoints').textContent = totalWeighted.toFixed(2);
+            document.getElementById('totalCoefficients').textContent = totalCoeff;
+            document.getElementById('finalAverage').textContent = (totalWeighted / totalCoeff).toFixed(2);
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        resetBtn.onclick = () => { streamSelect.value = ''; gradesSection.style.display = 'none'; resultsSection.style.display = 'none'; calculateBtn.style.display = 'none'; resetBtn.style.display = 'none'; };
+
+        function showNotif(msg, type) {
+            const el = document.getElementById(type === 'error' ? 'errorMessage' : 'successMessage');
+            document.getElementById(type === 'error' ? 'errorText' : 'successText').textContent = msg;
+            el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000);
+        }
+    </script>
 </body>
 </html>
