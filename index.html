@@ -13,15 +13,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="ve-lwXOh5LqUCmM3RfUBuysXMMBnwu5GiRZCKt9YNPk" />
-    <meta name="description" content="حاسبة معدل البكالوريا الجزائرية لجميع الشعب (علوم، رياضيات، تقني، آداب، لغات). احسب معدلك بدقة وسهولة مجانًا مع المعاملات الرسمية.">
-    <meta name="keywords" content="bac algeria, bac calculator, معدل البكالوريا الجزائر, حساب معدل البكالوريا, bac 2026, sciences bac, math bac, algérie bac">
-    <meta property="og:title" content="حاسبة معدل البكالوريا الجزائرية">
-    <meta property="og:description" content="احسب معدلك بدقة لجميع الشعب بسهولة وسرعة">
-    <meta property="og:image" content="https://bacalgeriacall.github.io/bac-calculator/bac-image.png">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bacalgeriacall.github.io/bac-calculator/">
+    <meta name="description" content="حاسبة معدل البكالوريا الجزائرية لجميع الشعب. احسب معدلك بدقة وسهولة مع المعاملات الرسمية وتحميل كشف نقاط PDF.">
+    <meta name="keywords" content="bac algeria, bac calculator, معدل البكالوريا الجزائر, حساب معدل البكالوريا, bac 2026">
     <title>حاسبة معدل البكالوريا الجزائرية</title>
-    <meta name="robots" content="index, follow">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -38,7 +32,6 @@
             --radius-lg: 0.75rem;
             --radius-xl: 1rem;
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,25 +40,10 @@
 
         .header { 
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
-            color: white; 
-            padding: 2rem 1rem; 
-            text-align: center; 
-            border-radius: 0 0 var(--radius-xl) var(--radius-xl); 
-            margin-bottom: 2rem; 
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            color: white; padding: 2rem 1rem; text-align: center; border-radius: 0 0 var(--radius-xl) var(--radius-xl); 
+            margin-bottom: 2rem; box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-        .logo-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: white;
-            padding: 5px;
-            box-shadow: var(--shadow-md);
-        }
+        .logo-img { width: 80px; height: 80px; border-radius: 50%; background: white; padding: 5px; box-shadow: var(--shadow-md); }
         .main-title { font-size: 2rem; margin: 0; }
         .subtitle { font-size: 1.1rem; opacity: 0.9; }
 
@@ -78,12 +56,9 @@
         .grades-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
         .grade-card { background: #f1f5f9; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); }
         .grade-card.disabled { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
-        
         .grade-label { font-weight: 700; display: block; margin-bottom: 5px; }
         .grade-coeff { background: var(--primary-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; }
-        
         .optional-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; cursor: pointer; }
-
         .grade-input { width: 100%; padding: 0.6rem; border: 2px solid var(--border-color); border-radius: 4px; font-size: 1rem; }
 
         .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
@@ -99,21 +74,20 @@
         .btn-pdf { background: #dc2626; }
 
         .footer { text-align: center; padding: 2rem; font-size: 0.85rem; background: #1e293b; color: white; border-radius: 10px 10px 0 0; }
-        
         .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--radius-md); color: white; z-index: 1000; display: none; }
 
-        /* تنسيق PDF */
+        /* تنسيق PDF المحسن */
         #pdf-content {
-            width: 100%; max-width: 750px; padding: 40px; background: white; color: black; direction: rtl;
-            position: absolute; left: -9999px;
+            width: 800px; padding: 40px; background: white; color: black; direction: rtl;
+            position: absolute; left: -9999px; page-break-inside: avoid;
         }
-        .pdf-header { text-align: center; border-bottom: 4px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 12px; text-align: center; font-size: 16px; page-break-inside: avoid; }
-        .pdf-table th { background-color: #eeeeee; font-weight: bold; }
-        .pdf-summary-box { border: 2.5px solid #000; padding: 25px; margin-top: 15px; }
-        .pdf-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .pdf-status-banner { font-size: 26px; font-weight: 900; text-align: center; margin-top: 20px; padding: 15px; border: 3px solid #000; border-radius: 10px; }
+        .pdf-header { text-align: center; border-bottom: 4px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; table-layout: fixed; }
+        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 10px; text-align: center; font-size: 15px; overflow: hidden; }
+        .pdf-table th { background-color: #f3f4f6; }
+        .pdf-summary-box { border: 2.5px solid #000; padding: 20px; margin-top: 10px; page-break-inside: avoid; }
+        .pdf-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 17px; border-bottom: 1px dashed #ccc; padding-bottom: 4px; }
+        .pdf-status-banner { font-size: 24px; font-weight: 900; text-align: center; margin-top: 15px; padding: 12px; border: 3px solid #000; border-radius: 10px; }
         .status-pass-final { color: #059669; border-color: #059669; background-color: #ecfdf5; }
         .status-fail-final { color: #dc2626; border-color: #dc2626; background-color: #fef2f2; }
         .avg-display { direction: ltr; display: inline-block; unicode-bidi: embed; }
@@ -171,11 +145,10 @@
         </footer>
     </div>
 
-    <!-- محتوى PDF -->
     <div id="pdf-content">
         <div class="pdf-header">
-            <h1 style="font-size: 32px; margin-bottom: 10px;">كشف نقاط تقديري - امتحان البكالوريا</h1>
-            <h2 id="pdf-stream" style="font-weight: normal; color: #374151; margin-bottom: 10px;"></h2>
+            <h1 style="font-size: 28px; margin-bottom: 5px;">كشف نقاط تقديري - امتحان البكالوريا</h1>
+            <h2 id="pdf-stream" style="font-weight: normal; color: #374151;"></h2>
         </div>
         <table class="pdf-table">
             <thead>
@@ -189,21 +162,15 @@
             <tbody id="pdf-tbody"></tbody>
         </table>
         <div class="pdf-summary-box">
-            <div class="pdf-row">
-                <span>المجموع العام للنقاط:</span>
-                <strong id="pdf-total-p"></strong>
-            </div>
-            <div class="pdf-row">
-                <span>مجموع المعاملات:</span>
-                <strong id="pdf-total-c"></strong>
-            </div>
-            <div class="pdf-row" style="margin-top: 15px; padding-top: 10px; border-top: 2px solid #000;">
-                <span style="font-size: 22px;">المعدل العام:</span>
-                <strong style="font-size: 28px; color: #2563eb;" id="pdf-avg-container"></strong>
+            <div class="pdf-row"><span>المجموع العام للنقاط:</span><strong id="pdf-total-p"></strong></div>
+            <div class="pdf-row"><span>مجموع المعاملات:</span><strong id="pdf-total-c"></strong></div>
+            <div class="pdf-row" style="margin-top: 10px; padding-top: 8px; border-top: 2px solid #000;">
+                <span style="font-size: 20px;">المعدل العام:</span>
+                <strong style="font-size: 26px; color: #2563eb;" id="pdf-avg-container"></strong>
             </div>
             <div id="pdf-status" class="pdf-status-banner"></div>
         </div>
-        <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px; border-top: 1px solid #ccc; padding-top: 10px;">
+        <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 13px; border-top: 1px solid #ccc; padding-top: 8px;">
             <span>التاريخ: <span id="pdf-date"></span></span>
             <span>المصدر: حاسبة معدل البكالوريا الجزائرية</span>
         </div>
@@ -277,9 +244,7 @@
 
         document.getElementById('calcBtn').onclick = () => {
             const key = streamSelect.value;
-            let points = 0, coeffs = 0, err = false;
-            let rows = '';
-
+            let points = 0, coeffs = 0, err = false, rows = '';
             streams[key].subjects.forEach(sub => {
                 const isEnabled = sub.opt ? document.getElementById(`tgl-${sub.id}`).checked : true;
                 if (isEnabled) {
@@ -291,51 +256,37 @@
                     }
                 }
             });
-
             if (err) { showNotif('يرجى إدخال جميع العلامات بشكل صحيح', '#ef4444'); return; }
-
             const avg = (points / coeffs).toFixed(2);
             document.getElementById('resPoints').innerText = points.toFixed(2);
             document.getElementById('resCoeff').innerText = coeffs;
             document.getElementById('resAvg').innerText = avg;
-
-            // تحديث بيانات PDF
             document.getElementById('pdf-stream').innerText = streams[key].name;
             document.getElementById('pdf-tbody').innerHTML = rows;
             document.getElementById('pdf-total-p').innerText = " " + points.toFixed(2);
             document.getElementById('pdf-total-c').innerText = " " + coeffs;
             document.getElementById('pdf-avg-container').innerHTML = `<span class="avg-display">${avg} / 20</span>`;
             document.getElementById('pdf-date').innerText = " " + new Date().toLocaleDateString('ar-DZ');
-            
             const statusBox = document.getElementById('pdf-status');
-            if (parseFloat(avg) >= 10) {
-                statusBox.innerText = "النتيجة النهائية: ناجح (ة)";
-                statusBox.className = "pdf-status-banner status-pass-final";
-            } else {
-                statusBox.innerText = "النتيجة النهائية: راسب (ة)";
-                statusBox.className = "pdf-status-banner status-fail-final";
-            }
-
+            if (parseFloat(avg) >= 10) { statusBox.innerText = "النتيجة النهائية: ناجح (ة)"; statusBox.className = "pdf-status-banner status-pass-final"; }
+            else { statusBox.innerText = "النتيجة النهائية: راسب (ة)"; statusBox.className = "pdf-status-banner status-fail-final"; }
             document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
         };
 
         document.getElementById('pdfBtn').onclick = () => {
             const element = document.getElementById('pdf-content');
-            element.style.position = 'static';
-            element.style.left = '0';
-
+            element.style.position = 'static'; element.style.left = '0';
             const opt = {
-                margin: [0.5, 0.2, 0.5, 0.2], // Top, Left, Bottom, Right margins in inches
+                margin: 0,
                 filename: 'كشف_نقاط_البكالوريا.pdf',
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, useCORS: true, letterRendering: true, allowTaint: true, scrollY: 0, foreignObjectRendering: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
-
             html2pdf().set(opt).from(element).save().then(() => {
-                element.style.position = 'absolute';
-                element.style.left = '-9999px';
+                element.style.position = 'absolute'; element.style.left = '-9999px';
             });
         };
 
