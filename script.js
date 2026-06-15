@@ -15,7 +15,7 @@ const streamsData = {
             { name: 'العلوم الطبيعية', coefficient: 6 },
             { name: 'العلوم الفيزيائية', coefficient: 5 },
             { name: 'الفلسفة', coefficient: 2 },
-            { name: 'التربية البدنية', coefficient: 1 }
+            { name: 'التربية البدنية', coefficient: 1, isOptional: true }
         ]
     },
     math: {
@@ -30,7 +30,7 @@ const streamsData = {
             { name: 'العلوم الطبيعية', coefficient: 2 },
             { name: 'العلوم الفيزيائية', coefficient: 6 },
             { name: 'الفلسفة', coefficient: 2 },
-            { name: 'التربية البدنية', coefficient: 1 }
+            { name: 'التربية البدنية', coefficient: 1, isOptional: true }
         ]
     },
     technical: {
@@ -45,7 +45,7 @@ const streamsData = {
             { name: 'العلوم الفيزيائية', coefficient: 6 },
             { name: 'التكنولوجيا', coefficient: 7 },
             { name: 'الفلسفة', coefficient: 2 },
-            { name: 'التربية البدنية', coefficient: 1 }
+            { name: 'التربية البدنية', coefficient: 1, isOptional: true }
         ]
     },
     management: {
@@ -61,7 +61,7 @@ const streamsData = {
             { name: 'القانون', coefficient: 2 },
             { name: 'التسيير المحاسبي والمالي', coefficient: 6 },
             { name: 'الفلسفة', coefficient: 2 },
-            { name: 'التربية البدنية', coefficient: 1 }
+            { name: 'التربية البدنية', coefficient: 1, isOptional: true }
         ]
     },
     languages: {
@@ -75,7 +75,7 @@ const streamsData = {
             { name: 'التاريخ والجغرافيا', coefficient: 2 },
             { name: 'الرياضيات', coefficient: 2 },
             { name: 'الفلسفة', coefficient: 2 },
-            { name: 'التربية البدنية', coefficient: 1 }
+            { name: 'التربية البدنية', coefficient: 1, isOptional: true }
         ]
     },
     literature: {
@@ -88,7 +88,7 @@ const streamsData = {
             { name: 'التاريخ والجغرافيا', coefficient: 4 },
             { name: 'الرياضيات', coefficient: 2 },
             { name: 'الفلسفة', coefficient: 6 },
-            { name: 'التربية البدنية', coefficient: 1 }
+            { name: 'التربية البدنية', coefficient: 1, isOptional: true }
         ]
     }
 };
@@ -99,6 +99,7 @@ const streamsData = {
 
 let currentStream = null;
 let gradesData = {};
+let optionalSubjectsState = {}; // لتخزين حالة المواد الاختيارية
 
 // ============================================
 // العناصر في الصفحة
@@ -133,6 +134,7 @@ streamSelect.addEventListener('change', (e) => {
     
     currentStream = selectedStream;
     gradesData = {};
+    optionalSubjectsState = {}; // إعادة تعيين حالة المواد الاختيارية
     
     showGradesSection();
     renderGradeCards();
@@ -176,11 +178,28 @@ function renderGradeCards() {
         card.className = 'grade-card';
         card.id = `card-${index}`;
         
+        // إذا كانت المادة اختيارية، نضع الحالة الافتراضية (مفعلة)
+        if (subject.isOptional) {
+            optionalSubjectsState[index] = true;
+        }
+
         const label = document.createElement('label');
         label.className = 'grade-label';
+        
+        let optionalToggleHtml = '';
+        if (subject.isOptional) {
+            optionalToggleHtml = `
+                <div style="margin-bottom: 10px; font-size: 0.85rem; color: #666; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="toggle-${index}" checked onchange="toggleOptionalSubject(${index})">
+                    <span>تفعيل المادة (غير معفى)</span>
+                </div>
+            `;
+        }
+
         label.innerHTML = `
             ${subject.name}
             <span class="grade-coefficient">معامل: ${subject.coefficient}</span>
+            ${optionalToggleHtml}
         `;
         
         const input = document.createElement('input');
@@ -213,6 +232,29 @@ function renderGradeCards() {
         gradesContainer.appendChild(card);
     });
 }
+
+/**
+ * تبديل حالة المادة الاختيارية
+ */
+window.toggleOptionalSubject = function(index) {
+    const isChecked = document.getElementById(`toggle-${index}`).checked;
+    const card = document.getElementById(`card-${index}`);
+    const input = document.getElementById(`grade-${index}`);
+    
+    optionalSubjectsState[index] = isChecked;
+    
+    if (isChecked) {
+        card.style.opacity = '1';
+        card.style.filter = 'none';
+        input.disabled = false;
+    } else {
+        card.style.opacity = '0.5';
+        card.style.filter = 'grayscale(1)';
+        input.disabled = true;
+        input.value = '';
+        delete gradesData[index];
+    }
+};
 
 /**
  * معالجة إدخال العلامة
@@ -280,9 +322,17 @@ function showError(card, errorMsg, message) {
 function calculateAverage() {
     const stream = streamsData[currentStream];
     
-    // التحقق من أن جميع العلامات مدخلة
-    if (Object.keys(gradesData).length !== stream.subjects.length) {
-        showNotification('يجب إدخال جميع العلامات', 'error');
+    // التحقق من أن جميع العلامات المدفوعة (غير الاختيارية أو الاختيارية المفعلة) مدخلة
+    let allFilled = true;
+    stream.subjects.forEach((subject, index) => {
+        const isEnabled = subject.isOptional ? optionalSubjectsState[index] : true;
+        if (isEnabled && (gradesData[index] === undefined || gradesData[index] === null)) {
+            allFilled = false;
+        }
+    });
+
+    if (!allFilled) {
+        showNotification('يجب إدخال جميع العلامات للمواد المفعلة', 'error');
         return;
     }
     
@@ -291,11 +341,15 @@ function calculateAverage() {
     let totalCoefficients = 0;
     
     stream.subjects.forEach((subject, index) => {
-        const grade = gradesData[index];
-        const coefficient = subject.coefficient;
+        const isEnabled = subject.isOptional ? optionalSubjectsState[index] : true;
         
-        totalWeightedGrades += grade * coefficient;
-        totalCoefficients += coefficient;
+        if (isEnabled) {
+            const grade = gradesData[index];
+            const coefficient = subject.coefficient;
+            
+            totalWeightedGrades += grade * coefficient;
+            totalCoefficients += coefficient;
+        }
     });
     
     // حساب المعدل
@@ -342,18 +396,22 @@ function displayExplanation(stream, totalWeighted, totalCoeff, average) {
     html += '<div class="detail-item"><div class="detail-label">تفاصيل الحساب:</div></div>';
     
     stream.subjects.forEach((subject, index) => {
-        const grade = gradesData[index];
-        const coefficient = subject.coefficient;
-        const weighted = grade * coefficient;
+        const isEnabled = subject.isOptional ? optionalSubjectsState[index] : true;
         
-        html += `
-            <div class="detail-item">
-                <div class="detail-label">${subject.name}</div>
-                <div class="detail-value">
-                    ${grade.toFixed(2)} × ${coefficient} = ${weighted.toFixed(2)}
+        if (isEnabled) {
+            const grade = gradesData[index];
+            const coefficient = subject.coefficient;
+            const weighted = grade * coefficient;
+            
+            html += `
+                <div class="detail-item">
+                    <div class="detail-label">${subject.name}</div>
+                    <div class="detail-value">
+                        ${grade.toFixed(2)} × ${coefficient} = ${weighted.toFixed(2)}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     });
     
     // إضافة ملخص الحساب
@@ -386,10 +444,12 @@ function resetForm() {
     inputs.forEach(input => {
         input.value = '';
         input.parentElement.classList.remove('error');
+        input.disabled = false;
     });
     
     // مسح البيانات
     gradesData = {};
+    optionalSubjectsState = {};
     
     // إخفاء النتائج
     hideResults();
@@ -425,67 +485,18 @@ function showNotification(message, type) {
         
         setTimeout(() => {
             successMsg.style.display = 'none';
-        }, 3000);
+        }, 4000);
     }
 }
 
-/**
- * إغلاق رسالة الخطأ
- */
 function closeError() {
     document.getElementById('errorMessage').style.display = 'none';
 }
 
-/**
- * إغلاق رسالة النجاح
- */
 function closeSuccess() {
     document.getElementById('successMessage').style.display = 'none';
 }
 
-// ============================================
-// ربط الأزرار بالأحداث
-// ============================================
-
+// إضافة أحداث الأزرار
 calculateBtn.addEventListener('click', calculateAverage);
 resetBtn.addEventListener('click', resetForm);
-
-// ============================================
-// تحسينات إضافية
-// ============================================
-
-/**
- * دعم لوحة المفاتيح (Enter لحساب المعدل)
- */
-document.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && calculateBtn.style.display !== 'none') {
-        calculateAverage();
-    }
-});
-
-/**
- * منع إدخال أحرف غير رقمية
- */
-document.addEventListener('keypress', (e) => {
-    if (e.target.classList.contains('grade-input')) {
-        if (!/[0-9.]/.test(e.key)) {
-            e.preventDefault();
-        }
-    }
-});
-
-/**
- * تحسين تجربة المستخدم على الهواتف
- */
-if (window.innerWidth < 768) {
-    document.body.style.fontSize = '16px'; // منع التكبير التلقائي على iOS
-}
-
-// ============================================
-// معالجة الأخطاء العامة
-// ============================================
-
-window.addEventListener('error', (e) => {
-    console.error('خطأ:', e.error);
-    showNotification('حدث خطأ ما. يرجى إعادة تحميل الصفحة.', 'error');
-});
