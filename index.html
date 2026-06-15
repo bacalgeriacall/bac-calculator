@@ -13,6 +13,8 @@
     <meta property="og:url" content="https://bacalgeriacall.github.io/bac-calculator/">
     <title>حاسبة معدل البكالوريا الجزائرية</title>
     <meta name="robots" content="index, follow">
+    <!-- مكتبة توليد PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary-color: #2563eb;
@@ -66,10 +68,22 @@
         .btn-primary { background: var(--primary-color); }
         .btn-secondary { background: var(--secondary-color); }
         .btn-share { background: #1da1f2; }
+        .btn-pdf { background: #dc2626; }
 
         .footer { text-align: center; padding: 2rem; font-size: 0.85rem; background: #1e293b; color: white; border-radius: 10px 10px 0 0; }
         
         .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--radius-md); color: white; z-index: 1000; display: none; box-shadow: var(--shadow-md); }
+
+        /* تنسيق كشف النقاط المخفي (للتوليد في PDF) */
+        #pdf-template {
+            width: 700px; padding: 40px; background: white; color: black; font-family: 'Arial', sans-serif;
+            position: absolute; left: -9999px; /* مخفي عن المستخدم */
+        }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .pdf-table th, .pdf-table td { border: 1px solid black; padding: 8px; text-align: center; }
+        .pdf-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+        .pdf-footer { margin-top: 30px; display: flex; justify-content: space-between; border-top: 2px solid black; padding-top: 10px; }
+        .pdf-summary { margin-top: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -112,7 +126,8 @@
                     <div class="result-card highlight"><div>المعدل النهائي</div><div class="result-value" id="resAvg">0.00</div></div>
                 </div>
                 <div class="buttons">
-                    <button id="shareBtn" class="btn btn-share">🔗 مشاركة النتيجة</button>
+                    <button id="shareBtn" class="btn btn-share">🔗 مشاركة</button>
+                    <button id="pdfBtn" class="btn btn-pdf">📄 تحميل كشف النقاط (PDF)</button>
                 </div>
             </section>
         </main>
@@ -122,40 +137,68 @@
         </footer>
     </div>
 
+    <!-- قالب PDF المخفي -->
+    <div id="pdf-template">
+        <div class="pdf-header">
+            <h2>كشف نقاط تقديري - امتحان البكالوريا</h2>
+            <p id="pdf-stream-name"></p>
+        </div>
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th>المادة</th>
+                    <th>النقطة / 20</th>
+                    <th>المعامل</th>
+                    <th>المجموع</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-body"></tbody>
+        </table>
+        <div class="pdf-summary">
+            <p>المجموع العام: <span id="pdf-total-points"></span></p>
+            <p>مجموع المعاملات: <span id="pdf-total-coeff"></span></p>
+            <p style="font-size: 1.2rem; margin-top: 10px;">المعدل العام: <span id="pdf-final-avg"></span> / 20</p>
+        </div>
+        <div class="pdf-footer">
+            <p>تاريخ الحساب: <span id="pdf-date"></span></p>
+            <p>حاسبة معدل البكالوريا الجزائرية</p>
+        </div>
+    </div>
+
     <div id="notif" class="notification"></div>
 
     <script>
         const streams = {
-            sciences: { subjects: [
+            sciences: { name: 'شعبة العلوم التجريبية', subjects: [
                 { id: 'ar', name: 'اللغة العربية', coeff: 3 }, { id: 'fr', name: 'اللغة الفرنسية', coeff: 2 }, { id: 'en', name: 'اللغة الإنجليزية', coeff: 2 },
                 { id: 'is', name: 'التربية الإسلامية', coeff: 2 }, { id: 'hg', name: 'التاريخ والجغرافيا', coeff: 2 }, { id: 'ma', name: 'الرياضيات', coeff: 5 },
                 { id: 'sn', name: 'العلوم الطبيعية', coeff: 6 }, { id: 'ph', name: 'العلوم الفيزيائية', coeff: 5 }, { id: 'fl', name: 'الفلسفة', coeff: 2 },
                 { id: 'pe', name: 'التربية البدنية', coeff: 1, opt: true }, { id: 'am', name: 'اللغة الأمازيغية', coeff: 2, opt: true }
             ]},
-            math: { subjects: [
+            math: { name: 'شعبة الرياضيات', subjects: [
                 { id: 'ar', name: 'اللغة العربية', coeff: 3 }, { id: 'fr', name: 'اللغة الفرنسية', coeff: 2 }, { id: 'en', name: 'اللغة الإنجليزية', coeff: 2 },
                 { id: 'is', name: 'التربية الإسلامية', coeff: 2 }, { id: 'hg', name: 'التاريخ والجغرافيا', coeff: 2 }, { id: 'ma', name: 'الرياضيات', coeff: 7 },
                 { id: 'sn', name: 'العلوم الطبيعية', coeff: 2 }, { id: 'ph', name: 'العلوم الفيزيائية', coeff: 6 }, { id: 'fl', name: 'الفلسفة', coeff: 2 },
                 { id: 'pe', name: 'التربية البدنية', coeff: 1, opt: true }, { id: 'am', name: 'اللغة الأمازيغية', coeff: 2, opt: true }
             ]},
-            technical: { subjects: [
+            technical: { name: 'شعبة تقني رياضي', subjects: [
                 { id: 'ar', name: 'اللغة العربية', coeff: 3 }, { id: 'fr', name: 'اللغة الفرنسية', coeff: 2 }, { id: 'en', name: 'اللغة الإنجليزية', coeff: 2 },
                 { id: 'is', name: 'التربية الإسلامية', coeff: 2 }, { id: 'hg', name: 'التاريخ والجغرافيا', coeff: 2 }, { id: 'ma', name: 'الرياضيات', coeff: 6 },
                 { id: 'ph', name: 'العلوم الفيزيائية', coeff: 6 }, { id: 'tc', name: 'التكنولوجيا', coeff: 7 }, { id: 'fl', name: 'الفلسفة', coeff: 2 },
                 { id: 'pe', name: 'التربية البدنية', coeff: 1, opt: true }, { id: 'am', name: 'اللغة الأمازيغية', coeff: 2, opt: true }
             ]},
-            management: { subjects: [
+            management: { name: 'شعبة تسيير واقتصاد', subjects: [
                 { id: 'ar', name: 'اللغة العربية', coeff: 3 }, { id: 'fr', name: 'اللغة الفرنسية', coeff: 2 }, { id: 'en', name: 'اللغة الإنجليزية', coeff: 2 },
                 { id: 'is', name: 'التربية الإسلامية', coeff: 2 }, { id: 'hg', name: 'التاريخ والجغرافيا', coeff: 4 }, { id: 'ma', name: 'الرياضيات', coeff: 5 },
                 { id: 'ec', name: 'الاقتصاد والمناجمنت', coeff: 5 }, { id: 'la', name: 'القانون', coeff: 2 }, { id: 'ge', name: 'التسيير المحاسبي والمالي', coeff: 6 },
                 { id: 'fl', name: 'الفلسفة', coeff: 2 }, { id: 'pe', name: 'التربية البدنية', coeff: 1, opt: true }, { id: 'am', name: 'اللغة الأمازيغية', coeff: 2, opt: true }
             ]},
-            languages: { subjects: [
+            languages: { name: 'شعبة لغات أجنبية', subjects: [
                 { id: 'ar', name: 'اللغة العربية', coeff: 5 }, { id: 'fr', name: 'اللغة الفرنسية', coeff: 5 }, { id: 'en', name: 'اللغة الإنجليزية', coeff: 5 },
                 { id: 'l3', name: 'اللغة الأجنبية الثالثة', coeff: 4 }, { id: 'is', name: 'التربية الإسلامية', coeff: 2 }, { id: 'hg', name: 'التاريخ والجغرافيا', coeff: 2 },
                 { id: 'ma', name: 'الرياضيات', coeff: 2 }, { id: 'fl', name: 'الفلسفة', coeff: 2 }, { id: 'pe', name: 'التربية البدنية', coeff: 1, opt: true }, { id: 'am', name: 'اللغة الأمازيغية', coeff: 2, opt: true }
             ]},
-            literature: { subjects: [
+            literature: { name: 'شعبة آداب وفلسفة', subjects: [
                 { id: 'ar', name: 'اللغة العربية', coeff: 6 }, { id: 'fr', name: 'اللغة الفرنسية', coeff: 3 }, { id: 'en', name: 'اللغة الإنجليزية', coeff: 3 },
                 { id: 'is', name: 'التربية الإسلامية', coeff: 2 }, { id: 'hg', name: 'التاريخ والجغرافيا', coeff: 4 }, { id: 'ma', name: 'الرياضيات', coeff: 2 },
                 { id: 'fl', name: 'الفلسفة', coeff: 6 }, { id: 'pe', name: 'التربية البدنية', coeff: 1, opt: true }, { id: 'am', name: 'اللغة الأمازيغية', coeff: 2, opt: true }
@@ -191,20 +234,50 @@
         document.getElementById('calcBtn').onclick = () => {
             const key = streamSelect.value;
             let points = 0, coeffs = 0, err = false;
+            let pdfRows = '';
+
             streams[key].subjects.forEach(sub => {
                 const isEnabled = sub.opt ? document.getElementById(`tgl-${sub.id}`).checked : true;
                 if (isEnabled) {
                     const val = parseFloat(document.getElementById(`in-${sub.id}`).value);
                     if (isNaN(val) || val < 0 || val > 20) err = true;
-                    else { points += val * sub.coeff; coeffs += sub.coeff; }
+                    else {
+                        const subTotal = (val * sub.coeff).toFixed(2);
+                        points += val * sub.coeff; coeffs += sub.coeff;
+                        pdfRows += `<tr><td>${sub.name}</td><td>${val.toFixed(2)}</td><td>${sub.coeff}</td><td>${subTotal}</td></tr>`;
+                    }
                 }
             });
+
             if (err) { showNotif('يرجى إدخال جميع العلامات بشكل صحيح', '#ef4444'); return; }
+
+            const finalAvg = (points / coeffs).toFixed(2);
             document.getElementById('resPoints').innerText = points.toFixed(2);
             document.getElementById('resCoeff').innerText = coeffs;
-            document.getElementById('resAvg').innerText = (points / coeffs).toFixed(2);
+            document.getElementById('resAvg').innerText = finalAvg;
+
+            // تحديث قالب PDF
+            document.getElementById('pdf-stream-name').innerText = streams[key].name;
+            document.getElementById('pdf-body').innerHTML = pdfRows;
+            document.getElementById('pdf-total-points').innerText = points.toFixed(2);
+            document.getElementById('pdf-total-coeff').innerText = coeffs;
+            document.getElementById('pdf-final-avg').innerText = finalAvg;
+            document.getElementById('pdf-date').innerText = new Date().toLocaleDateString('ar-DZ');
+
             document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        document.getElementById('pdfBtn').onclick = () => {
+            const element = document.getElementById('pdf-template');
+            const opt = {
+                margin: 1,
+                filename: 'كشف_نقاط_البكالوريا_تقديري.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
         };
 
         document.getElementById('shareBtn').onclick = () => {
