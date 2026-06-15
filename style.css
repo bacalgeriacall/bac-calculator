@@ -185,6 +185,7 @@ body {
     padding: 1.5rem;
     transition: var(--transition);
     animation: slideUp 0.4s ease-out;
+    position: relative;
 }
 
 .grade-card:hover {
@@ -196,6 +197,14 @@ body {
 .grade-card.error {
     border-color: var(--danger-color);
     background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* تنسيق المادة عند التعطيل */
+.grade-card.disabled {
+    opacity: 0.5;
+    filter: grayscale(1);
+    pointer-events: none;
+    background: #e2e8f0;
 }
 
 .grade-label {
@@ -217,6 +226,36 @@ body {
     margin-right: 0.5rem;
 }
 
+/* تنسيق مربع الاختيار للمواد الاختيارية */
+.optional-toggle-container {
+    margin-bottom: 12px;
+    padding: 8px;
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.optional-toggle-container:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.optional-toggle-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.optional-toggle-container span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
 .grade-input {
     width: 100%;
     padding: 0.75rem;
@@ -233,8 +272,9 @@ body {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.grade-input:invalid {
-    border-color: var(--danger-color);
+.grade-input:disabled {
+    background-color: #f1f5f9;
+    cursor: not-allowed;
 }
 
 .grade-error {
@@ -533,208 +573,39 @@ body {
    الحركات والانتقالات (Animations)
    ============================================ */
 @keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* ============================================
    التصميم المتجاوب (Responsive Design)
    ============================================ */
-
-/* الأجهزة اللوحية (Tablets) */
 @media (max-width: 768px) {
-    .main-title {
-        font-size: 2rem;
-    }
-
-    .subtitle {
-        font-size: 1rem;
-    }
-
-    .header {
-        padding: 2rem 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .section {
-        padding: 1.5rem;
-    }
-
-    .grades-container {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1rem;
-    }
-
-    .results-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .btn {
-        padding: 0.875rem 1.5rem;
-        font-size: 0.95rem;
-    }
-
-    .error-message,
-    .success-message {
-        right: 10px;
-        left: 10px;
-        max-width: none;
-    }
+    .main-title { font-size: 2rem; }
+    .header { padding: 2rem 1rem; }
+    .grades-container { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .results-grid { grid-template-columns: 1fr; }
 }
 
-/* الهواتف الذكية (Mobile Phones) */
 @media (max-width: 480px) {
-    .container {
-        padding: 0 0.75rem;
-    }
-
-    .header {
-        padding: 1.5rem 0.75rem;
-        margin-bottom: 1rem;
-        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    }
-
-    .main-title {
-        font-size: 1.5rem;
-    }
-
-    .subtitle {
-        font-size: 0.9rem;
-    }
-
-    .section {
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-    }
-
-    .section-header {
-        margin-bottom: 1rem;
-        padding-bottom: 0.75rem;
-    }
-
-    .section-header h2 {
-        font-size: 1.25rem;
-    }
-
-    .grades-container {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .grade-card {
-        padding: 1rem;
-    }
-
-    .result-card {
-        padding: 1.5rem 1rem;
-    }
-
-    .result-value {
-        font-size: 2rem;
-    }
-
-    .buttons-section {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
-        justify-content: center;
-        padding: 1rem;
-    }
-
-    .help-content {
-        grid-template-columns: 1fr;
-    }
-
-    .help-step {
-        padding: 1rem;
-    }
-
-    .footer {
-        padding: 1.5rem 0.75rem;
-    }
-
-    .error-message,
-    .success-message {
-        right: 0;
-        left: 0;
-        top: auto;
-        bottom: 20px;
-        border-radius: var(--radius-md) var(--radius-md) 0 0;
-        max-width: none;
-    }
-}
-
-/* ============================================
-   الحالات الخاصة
-   ============================================ */
-
-/* عندما تكون الشعبة غير محددة */
-.section.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-/* تأثير التحميل */
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-/* ============================================
-   الطباعة (Print Styles)
-   ============================================ */
-@media print {
-    body {
-        background: white;
-    }
-
-    .section {
-        page-break-inside: avoid;
-        box-shadow: none;
-        border: 1px solid var(--border-color);
-    }
-
-    .buttons-section,
-    .help-section {
-        display: none;
-    }
+    .main-title { font-size: 1.5rem; }
+    .section { padding: 1.25rem; }
+    .grades-container { grid-template-columns: 1fr; }
+    .buttons-section { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
 }
