@@ -13,7 +13,6 @@
     <meta property="og:url" content="https://bacalgeriacall.github.io/bac-calculator/">
     <title>حاسبة معدل البكالوريا الجزائرية</title>
     <meta name="robots" content="index, follow">
-    <!-- مكتبة توليد PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -34,21 +33,20 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--background-color); color: var(--text-primary); line-height: 1.6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-color); color: var(--text-primary); line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 1rem; }
 
         .header { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 2.5rem 1rem; text-align: center; border-radius: 0 0 var(--radius-xl) var(--radius-xl); margin-bottom: 2rem; box-shadow: var(--shadow-md); }
         .main-title { font-size: 2rem; margin-bottom: 0.5rem; }
-        .subtitle { font-size: 1.1rem; opacity: 0.9; }
 
         .section { background: var(--surface-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md); margin-bottom: 1.5rem; }
         .section-header { margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
         .section-header h2 { font-size: 1.3rem; color: var(--primary-color); }
 
-        .stream-dropdown { width: 100%; max-width: 400px; padding: 0.8rem; border-radius: var(--radius-md); border: 2px solid var(--border-color); font-size: 1rem; outline: none; }
+        .stream-dropdown { width: 100%; max-width: 400px; padding: 0.8rem; border-radius: var(--radius-md); border: 2px solid var(--border-color); font-size: 1rem; }
 
         .grades-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
-        .grade-card { background: #f1f5f9; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); transition: var(--transition); }
+        .grade-card { background: #f1f5f9; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border-color); }
         .grade-card.disabled { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
         
         .grade-label { font-weight: 700; display: block; margin-bottom: 5px; }
@@ -64,7 +62,7 @@
         .result-value { font-size: 2rem; font-weight: 800; }
 
         .buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 1.5rem 0; }
-        .btn { padding: 0.8rem 1.5rem; border-radius: var(--radius-md); border: none; font-weight: 700; cursor: pointer; transition: var(--transition); color: white; display: flex; align-items: center; gap: 8px; }
+        .btn { padding: 0.8rem 1.5rem; border-radius: var(--radius-md); border: none; font-weight: 700; cursor: pointer; color: white; display: flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--primary-color); }
         .btn-secondary { background: var(--secondary-color); }
         .btn-share { background: #1da1f2; }
@@ -72,18 +70,17 @@
 
         .footer { text-align: center; padding: 2rem; font-size: 0.85rem; background: #1e293b; color: white; border-radius: 10px 10px 0 0; }
         
-        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--radius-md); color: white; z-index: 1000; display: none; box-shadow: var(--shadow-md); }
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--radius-md); color: white; z-index: 1000; display: none; }
 
-        /* تنسيق كشف النقاط المخفي (للتوليد في PDF) */
-        #pdf-template {
-            width: 700px; padding: 40px; background: white; color: black; font-family: 'Arial', sans-serif;
-            position: absolute; left: -9999px; /* مخفي عن المستخدم */
+        /* تنسيق PDF المحسن */
+        #pdf-content {
+            width: 800px; padding: 40px; background: white; color: black; direction: rtl;
+            position: absolute; left: -9999px; /* مخفي */
         }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .pdf-table th, .pdf-table td { border: 1px solid black; padding: 8px; text-align: center; }
-        .pdf-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
-        .pdf-footer { margin-top: 30px; display: flex; justify-content: space-between; border-top: 2px solid black; padding-top: 10px; }
-        .pdf-summary { margin-top: 20px; font-weight: bold; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 10px; text-align: center; font-size: 14px; }
+        .pdf-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .pdf-summary { margin-top: 20px; font-size: 16px; border: 1px solid #000; padding: 15px; }
     </style>
 </head>
 <body>
@@ -137,31 +134,31 @@
         </footer>
     </div>
 
-    <!-- قالب PDF المخفي -->
-    <div id="pdf-template">
+    <!-- محتوى PDF المخفي -->
+    <div id="pdf-content">
         <div class="pdf-header">
-            <h2>كشف نقاط تقديري - امتحان البكالوريا</h2>
-            <p id="pdf-stream-name"></p>
+            <h1 style="margin-bottom: 5px;">كشف نقاط تقديري - امتحان البكالوريا</h1>
+            <h3 id="pdf-stream"></h3>
         </div>
         <table class="pdf-table">
             <thead>
-                <tr>
+                <tr style="background: #f0f0f0;">
                     <th>المادة</th>
                     <th>النقطة / 20</th>
                     <th>المعامل</th>
                     <th>المجموع</th>
                 </tr>
             </thead>
-            <tbody id="pdf-body"></tbody>
+            <tbody id="pdf-tbody"></tbody>
         </table>
         <div class="pdf-summary">
-            <p>المجموع العام: <span id="pdf-total-points"></span></p>
-            <p>مجموع المعاملات: <span id="pdf-total-coeff"></span></p>
-            <p style="font-size: 1.2rem; margin-top: 10px;">المعدل العام: <span id="pdf-final-avg"></span> / 20</p>
+            <p>المجموع العام: <strong id="pdf-total-p"></strong></p>
+            <p>مجموع المعاملات: <strong id="pdf-total-c"></strong></p>
+            <p style="font-size: 20px; margin-top: 10px; color: #2563eb;">المعدل العام: <strong id="pdf-avg"></strong> / 20</p>
         </div>
-        <div class="pdf-footer">
-            <p>تاريخ الحساب: <span id="pdf-date"></span></p>
-            <p>حاسبة معدل البكالوريا الجزائرية</p>
+        <div style="margin-top: 30px; text-align: left; font-size: 12px;">
+            <p>تم استخراج هذا الكشف من حاسبة معدل البكالوريا الجزائرية</p>
+            <p>التاريخ: <span id="pdf-date"></span></p>
         </div>
     </div>
 
@@ -234,7 +231,7 @@
         document.getElementById('calcBtn').onclick = () => {
             const key = streamSelect.value;
             let points = 0, coeffs = 0, err = false;
-            let pdfRows = '';
+            let rows = '';
 
             streams[key].subjects.forEach(sub => {
                 const isEnabled = sub.opt ? document.getElementById(`tgl-${sub.id}`).checked : true;
@@ -242,26 +239,25 @@
                     const val = parseFloat(document.getElementById(`in-${sub.id}`).value);
                     if (isNaN(val) || val < 0 || val > 20) err = true;
                     else {
-                        const subTotal = (val * sub.coeff).toFixed(2);
                         points += val * sub.coeff; coeffs += sub.coeff;
-                        pdfRows += `<tr><td>${sub.name}</td><td>${val.toFixed(2)}</td><td>${sub.coeff}</td><td>${subTotal}</td></tr>`;
+                        rows += `<tr><td>${sub.name}</td><td>${val.toFixed(2)}</td><td>${sub.coeff}</td><td>${(val * sub.coeff).toFixed(2)}</td></tr>`;
                     }
                 }
             });
 
             if (err) { showNotif('يرجى إدخال جميع العلامات بشكل صحيح', '#ef4444'); return; }
 
-            const finalAvg = (points / coeffs).toFixed(2);
+            const avg = (points / coeffs).toFixed(2);
             document.getElementById('resPoints').innerText = points.toFixed(2);
             document.getElementById('resCoeff').innerText = coeffs;
-            document.getElementById('resAvg').innerText = finalAvg;
+            document.getElementById('resAvg').innerText = avg;
 
-            // تحديث قالب PDF
-            document.getElementById('pdf-stream-name').innerText = streams[key].name;
-            document.getElementById('pdf-body').innerHTML = pdfRows;
-            document.getElementById('pdf-total-points').innerText = points.toFixed(2);
-            document.getElementById('pdf-total-coeff').innerText = coeffs;
-            document.getElementById('pdf-final-avg').innerText = finalAvg;
+            // تحديث بيانات PDF
+            document.getElementById('pdf-stream').innerText = streams[key].name;
+            document.getElementById('pdf-tbody').innerHTML = rows;
+            document.getElementById('pdf-total-p').innerText = points.toFixed(2);
+            document.getElementById('pdf-total-c').innerText = coeffs;
+            document.getElementById('pdf-avg').innerText = avg;
             document.getElementById('pdf-date').innerText = new Date().toLocaleDateString('ar-DZ');
 
             document.getElementById('resultSection').style.display = 'block';
@@ -269,24 +265,31 @@
         };
 
         document.getElementById('pdfBtn').onclick = () => {
-            const element = document.getElementById('pdf-template');
+            const element = document.getElementById('pdf-content');
+            // إظهار مؤقت للتوليد
+            element.style.position = 'static';
+            element.style.left = '0';
+
             const opt = {
-                margin: 1,
-                filename: 'كشف_نقاط_البكالوريا_تقديري.pdf',
+                margin: 0.5,
+                filename: 'كشف_نقاط_البكالوريا.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
-            html2pdf().set(opt).from(element).save();
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // إخفاء مرة أخرى
+                element.style.position = 'absolute';
+                element.style.left = '-9999px';
+            });
         };
 
         document.getElementById('shareBtn').onclick = () => {
             const avg = document.getElementById('resAvg').innerText;
-            const text = `الحمد لله! لقد حصلت على معدل ${avg} في تجربة محاكاة البكالوريا الجزائرية 🇩🇿.\nاحسب معدلك أنت أيضاً عبر هذا الرابط: ${window.location.href}`;
-            navigator.clipboard.writeText(text).then(() => showNotif('تم نسخ النتيجة! يمكنك الآن لصقها ومشاركتها.', '#10b981'));
+            const text = `الحمد لله! حصلت على معدل ${avg} في محاكاة البكالوريا الجزائرية 🇩🇿.\nاحسب معدلك هنا: ${window.location.href}`;
+            navigator.clipboard.writeText(text).then(() => showNotif('تم نسخ النتيجة لمشاركتها!', '#10b981'));
         };
-
-        document.getElementById('resetBtn').onclick = () => { streamSelect.value = ''; document.getElementById('inputSection').style.display = 'none'; document.getElementById('resultSection').style.display = 'none'; };
 
         function showNotif(msg, color) {
             const n = document.getElementById('notif');
