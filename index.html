@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TXHSXRSSMR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-TXHSXRSSMR');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="ve-lwXOh5LqUCmM3RfUBuysXMMBnwu5GiRZCKt9YNPk" />
@@ -36,7 +45,6 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-color); color: var(--text-primary); line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 1rem; }
 
-        /* تنسيق الهيدر مع اللوغو */
         .header { 
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
             color: white; 
@@ -112,12 +120,10 @@
     </style>
 </head>
 <body>
-    <!-- الصورة الرأسية الكبيرة -->
     <img src="bac-image.png" alt="Header" style="width:100%; max-width:800px; display:block; margin:auto; margin-top: 20px; border-radius: 10px;">
 
     <div class="container">
         <header class="header">
-            <!-- الشعار الصغير -->
             <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
             <h1 class="main-title">حاسبة معدل البكالوريا</h1>
             <p class="subtitle">احسب معدلك بدقة حسب شعبتك</p>
